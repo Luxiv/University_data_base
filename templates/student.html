@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Student
+{% endblock %}
+
+{% block body %}
+     <div class="container">
+        <div class="card-deck mb-3 text-center">
+        <h1>Student INFO</h1>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h6 class="border-bottom pb-2 mb-0">Student</h6>
+            <div class="container row row-cols-1 row-cols-md-10 gx-1">
+                {% for std in info %}
+                    {% if id == std.id %}
+                        <div class="col themed-grid-col" ><code>ID: {{ std.id }} </code></div>
+                        <div class="col themed-grid-col"><code>Full name: {{ std.first_name }} {{std.last_name }}</code></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        </div>
+        {% for std in info %}
+            {% if id == std.id %}
+                {% for grp in grps %}
+                    {% if grp.id == std.group_id %}
+                        <div class="container row row-cols-1 row-cols-md-5 gx-1">
+                            <div class="col themed-grid-col" ><code>Group: </code><a href='/groups/?group={{ grp.id }}' id="{{ grp.id }}"> {{ grp.name }} </a></div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% for crs in crss %}
+                    {% for raw in tbl %}
+                        {% if raw.course_id == crs.id and raw.student_id == std.id %}
+                            <div class="container row row-cols-1 row-cols-md-5 gx-1">
+                                <div class="col themed-grid-col" ><code>Course: </code><a href='/courses/?course_id={{ crs.id }}' id="{{ crs.id }}"> {{ crs.name }} </a></div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        </div>
+{% endblock %}

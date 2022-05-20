@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Courses
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+        <h1>Courses list</h1>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+        </div>
+        {% for crs in crss %}
+            <div class="container row row-cols-1 row-cols-md-5 gx-1">
+                <div class="col themed-grid-col" ><a href='/courses/?course_id={{ crs.id }}' id="{{ crs.id }}">{{ crs.name }}</a></div>
+            </div>
+        {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+

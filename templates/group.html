@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Group
+{% endblock %}
+
+
+
+{% block body %}
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+        <h1>Group Info</h1>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+
+                {% for grp in grps %}
+                    {% if group_id == grp.id %}
+                        <h6 class="border-bottom pb-2 mb-0">Students in group: {{ grp.name }} </h6>
+                    {% endif %}
+                {% endfor %}
+
+            <div class="container row row-cols-1 row-cols-md-5 gx-1">
+                <div class="col themed-grid-col" ><code>ID </code></div>
+                <div class="col themed-grid-col"><code>First Name</code></div>
+                <div class="col themed-grid-col"><code>Last Name</code></div>
+            </div>
+        </div>
+
+            {% for std in stds %}
+                {% if std.group_id == group_id %}
+                    <div class="container row row-cols-1 row-cols-md-5 gx-1">
+                        <div class="col themed-grid-col" ><a href='/students/?student_id={{ std.id }}' id="{{ std.id }}">{{ std.id }} </a></div>
+                        <div class="col themed-grid-col"><code>{{ std.first_name }}</code></div>
+                        <div class="col themed-grid-col"><code>{{ std.last_name }}</code></div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+

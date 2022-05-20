@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Groups
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+        <h1>Groups</h1>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+        </div>
+        {% for group in grps %}
+            <div class="container row row-cols-1 row-cols-md-5 gx-1">
+                <div class="col themed-grid-col" ><a href='/groups/?group={{ group.id }}' id="{{ group.id }}">{{ group.name }}</a></div>
+            </div>
+        {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
