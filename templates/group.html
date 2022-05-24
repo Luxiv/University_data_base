@@ -4,6 +4,13 @@
 Group
 {% endblock %}
 
+{% block a %}
+    {% for grp_id, count in numbr_stds_in_grp.items() %}
+        {% if grp_id == group_id %}
+        <a class="me-3 py-2 text-dark text-decoration-none" href="/groups/?count={{ count }}">Groups with less student count</a>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
 
 
 {% block body %}
@@ -19,7 +26,7 @@ Group
                 {% endfor %}
 
             <div class="container row row-cols-1 row-cols-md-5 gx-1">
-                <div class="col themed-grid-col" ><code>ID </code></div>
+                <div class="col themed-grid-col" ><code>Stud ID </code></div>
                 <div class="col themed-grid-col"><code>First Name</code></div>
                 <div class="col themed-grid-col"><code>Last Name</code></div>
             </div>

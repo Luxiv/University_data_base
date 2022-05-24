@@ -16,8 +16,18 @@ Course
                         <h6 class="border-bottom pb-2 mb-0">Students on course: {{ crs.name }} </h6>
                     {% endif %}
                 {% endfor %}
+
+            <form method="post" class="form-contact">
+             <p><input type="submit" name="add_std" value="Add Student " />
+                 <select name="students">
+                         {% for std in stds %}
+                                <option value={{ std.id }}>{{ std.first_name }} {{ std.last_name }}</option>
+                         {% endfor %}
+                 </select>
+            </form>
+
             <div class="container row row-cols-1 row-cols-md-5 gx-1">
-                <div class="col themed-grid-col" ><code>ID </code></div>
+                <div class="col themed-grid-col" ><code>Stud ID </code></div>
                 <div class="col themed-grid-col"><code>First Name</code></div>
                 <div class="col themed-grid-col"><code>Last Name</code></div>
             </div>

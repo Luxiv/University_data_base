@@ -63,26 +63,6 @@ def course_upload():
         print('Db courses adding error')
 
 
-
-# def students_courses_assignation():
-#     try:
-#         for std in Student.query.all():
-#             number_courses_for_one_student = random.choice(range(1, 4))
-#             used_courses_list = []
-#             for j in range(1, number_courses_for_one_student + 1):
-#                 course = random.choice(Course.query.all())
-#                 if course not in used_courses_list:
-#                     statement = stud_course.insert().values(student_id=std.s_id, course_id=course.c_id)
-#                     db.session.execute(statement)
-#
-#                     print(f'Student: {std.s_id} course: {course.name}')
-#                 used_courses_list.append(course)
-#             print('______________________________')
-#         db.session.commit()
-#     except:
-#         db.session.rollback()
-#         print('Db assignation error')
-
 def students_courses_assignation():
     try:
         for std in Student.query.all():

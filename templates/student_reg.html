@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Student
+{% endblock %}
+
+{% block body %}
+     <div class="container">
+        <div class="card-deck mb-3 text-center">
+            <h1>Student registration</h1>
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h6 class="border-bottom pb-2 mb-0">Please fill the fields</h6>
+                <div class="container row row-cols-1 row-cols-md-10 gx-1">
+                    <form action="" method="post" class="form-contact">
+                    <p><label>First name: </label> <input type="text" name="first name" value="" required />
+                    <p><label>Last name: </label> <input type="text" name="last name" value="" required />
+                    <p><label>Group id: </label> <input type="text" name="group id" value="" required />
+                    <p><label>Course id: </label> <input type="text" name="course" value="" required />
+                    <p><input type="submit" value="Registration" />
+                    </form>
+                </div>
+            </div>
+        </div>
+     </div>
+{% endblock %}

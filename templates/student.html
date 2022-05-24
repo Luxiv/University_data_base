@@ -41,5 +41,25 @@ Student
                 {% endfor %}
             {% endif %}
         {% endfor %}
-        </div>
+
+         <form action="" method="post" class="form-contact">
+             <p><input type="submit" name="rem_std" value="Remove student" />
+         </form>
+         <form action="" method="post" class="form-contact">
+             <p><input type="submit" name="rem_crs" value="Remove course" />
+                 <select name="courses">
+                         {% for std in info %}
+                            {% if id == std.id %}
+                                {% for crs in crss %}
+                                    {% for raw in tbl %}
+                                        {% if raw.course_id == crs.id and raw.student_id == std.id %}
+                                            <option value={{ crs.id }}>{{ crs.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                     </select>
+         </form>
+     </div>
 {% endblock %}

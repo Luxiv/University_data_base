@@ -6,15 +6,9 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students3.db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost/students'
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
-# stud_course = db.Table('stud_course',
-#                        db.Column('student_id', db.Integer, db.ForeignKey('student.s_id')),
-#                        db.Column('course_id', db.Integer, db.ForeignKey('course.c_id'))
-#                        )
 
 
 # Associatin Table:

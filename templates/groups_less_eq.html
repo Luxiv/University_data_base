@@ -12,6 +12,7 @@ Groups
         <div class="my-3 p-3 bg-body rounded shadow-sm">
         </div>
         {% for group in grps %}
+            {% if group.id in grps_l_e %}
             <div class="container row row-cols-1 row-cols-md-5 gx-1">
                 <div class="col themed-grid-col" ><a href='/groups/?group={{ group.id }}' id="{{ group.id }}">{{ group.name }}</a></div>
                 {% for grp_id, count in numbr_stds_in_grp.items() %}
@@ -20,6 +21,7 @@ Groups
                     {% endif %}
                 {% endfor %}
             </div>
+            {% endif %}
         {% endfor %}
 
         </div>
