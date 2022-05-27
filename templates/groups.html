@@ -13,7 +13,7 @@ Groups
         </div>
         {% for group in grps %}
             <div class="container row row-cols-1 row-cols-md-5 gx-1">
-                <div class="col themed-grid-col" ><a href='/groups/?group={{ group.id }}' id="{{ group.id }}">{{ group.name }}</a></div>
+                <div class="col themed-grid-col" ><a href='/groups/?group_id={{ group.id }}' id="{{ group.id }}">{{ group.name }}</a></div>
                 {% for grp_id, count in numbr_stds_in_grp.items() %}
                     {% if grp_id == group.id %}
                         <div class="col themed-grid-col" ><a>{{ count }} students</a></div>

@@ -1,9 +1,15 @@
 from models import db, Student, Course, Group
-from models import Stud_Course as stud_course
+from models import StudCourse as stud_course
 from info_generators import Student_Gen, Course_Gen, Group_Gen
 import random
 
 def groups_upload(group_number):
+    """
+    Group uploader gets info at Group_Gen().group_gene8or()
+    and uploads it to database
+    :param group_number:
+    :return: text
+    """
     try:
         for group_name in Group_Gen().group_gene8or(group_number):
             g = Group(name=group_name)
@@ -33,9 +39,11 @@ def group_id_gen(used_id, id_list):
 
 
 def stud_upload(stud_number):
-    '''
-    :return:
-    '''
+    """
+    Student uploader gets info at Student_Gen().student_gene8or()
+    and uploads it to database
+    :return: text
+    """
     try:
         used_id = []
         group_ids_list = [i.id for i in Group.query.all()]
@@ -52,6 +60,11 @@ def stud_upload(stud_number):
 
 
 def course_upload():
+    """
+    Course uploader gets info at Course_Gen().courses_list()
+    and uploads it to database
+    :return: text
+    """
     try:
         for course in Course_Gen().courses_list():
             c = Course(name=course, description=f'On this course you going to study {course}!')
@@ -64,6 +77,11 @@ def course_upload():
 
 
 def students_courses_assignation():
+    """
+        This function assigns each student for course
+        number of courses is random for each student: (1-3)
+    :return: text
+    """
     try:
         for std in Student.query.all():
             number_courses_for_one_student = random.choice(range(1, 4))

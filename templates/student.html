@@ -31,8 +31,8 @@ Student
                     {% endif %}
                 {% endfor %}
                 {% for crs in crss %}
-                    {% for raw in tbl %}
-                        {% if raw.course_id == crs.id and raw.student_id == std.id %}
+                    {% for row in tbl %}
+                        {% if row.course_id == crs.id and row.student_id == std.id %}
                             <div class="container row row-cols-1 row-cols-md-5 gx-1">
                                 <div class="col themed-grid-col" ><code>Course: </code><a href='/courses/?course_id={{ crs.id }}' id="{{ crs.id }}"> {{ crs.name }} </a></div>
                             </div>

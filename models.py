@@ -1,24 +1,22 @@
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students3.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost/students'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost/students'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 
 # Associatin Table:
-class Stud_Course(db.Model):
+class StudCourse(db.Model):
     __tablename__ = 'stud_course'
     id = db.Column(db.Integer(), primary_key=True)
     student_id = db.Column(db.Integer(), db.ForeignKey('student.id',
-                                                    ondelete='CASCADE'))
+                                                       ondelete='CASCADE'))
     course_id = db.Column(db.Integer(), db.ForeignKey('course.id',
-                                                    ondelete='CASCADE'))
+                                                      ondelete='CASCADE'))
 
 
 class Group(db.Model):
@@ -61,5 +59,3 @@ class Course(db.Model):
 
     def __repr__(self):
         return f'ID: {self.id} Course {self.name}'
-
-

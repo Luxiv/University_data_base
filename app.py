@@ -1,34 +1,40 @@
 from flask import render_template, request
-from models import Group, Student, Course, app, Stud_Course as stud_course, db
+from models import Group, Student, Course, StudCourse as stud_course, db, app
+from api import api
 
 
 @app.route('/groups/', methods=['GET'])
 def Groups():
-
+    """
+    Groups/Group info
+    :return: text/html
+    """
     grp_info = Group.query.all()
     group_ids_list = [std.group_id for std in Student.query.all()]
     numbr_stds_in_grp = {grp.id: group_ids_list.count(grp.id) for grp in Group.query.all()}
 
-    if request.args.get('group'):
-        group = request.args.get('group')
+    if request.args.get('group_id'):
+        group = request.args.get('group_id')
         std_info = Student.query.filter(Student.group_id == int(group))
         return render_template('group.html', group_id=int(group),
                                stds=std_info, grps=grp_info, numbr_stds_in_grp=numbr_stds_in_grp)
 
     elif request.args.get('count'):
-        grps_less_equal_count = []
-        for grp_id, numbr in numbr_stds_in_grp.items():
-            if numbr <= int(request.args.get('count')):
-                grps_less_equal_count.append(grp_id)
+        """ to implement function 'Find all groups with less or equals student count' """
+        grps_less_equal_count = [grp_id for grp_id, numbr in numbr_stds_in_grp.items()
+                                 if numbr <= int(request.args.get('count'))]
         return render_template('groups_less_eq.html', grps_l_e=grps_less_equal_count, grps=grp_info,
                                numbr_stds_in_grp=numbr_stds_in_grp)
 
     return render_template('groups.html', grps=grp_info, numbr_stds_in_grp=numbr_stds_in_grp)
 
 
-@app.route('/')
 @app.route('/students/', methods=('POST', 'GET'))
 def Students():
+    """
+    Students/Student info
+    :return: text/html
+    """
     std_info = Student.query.all()
     if request.args.get('student_id'):
         grp_info = Group.query.all()
@@ -36,6 +42,7 @@ def Students():
         tbl = stud_course.query.all()
         student = request.args.get('student_id')
         if request.form.get('rem_std'):
+            '''Remove student'''
             try:
                 s = Student.query.filter_by(id=int(student)).first()
                 db.session.delete(s)
@@ -46,6 +53,7 @@ def Students():
                 print('Removing error')
 
         elif request.form.get('rem_crs'):
+            '''Remove student from course'''
             try:
                 c = stud_course.query.filter_by(student_id=int(student),
                                                 course_id=request.form.get('courses')).first()
@@ -61,8 +69,12 @@ def Students():
     return render_template('students.html', info=std_info)
 
 
-@app.route('/courses/', methods=['POST', 'GET'])
+@app.route('/courses/', methods=['POST', 'GET', 'PUT'])
 def Courses():
+    """
+    Courses/Course info
+    :return: text/html
+    """
     crs_info = Course.query.all()
     if request.args.get('course_id'):
         tbl = stud_course.query.all()
@@ -70,9 +82,10 @@ def Courses():
         grp_info = Group.query.all()
         course = request.args.get('course_id')
         if request.form.get('add_std'):
+            """ Add student on course from list"""
             try:
                 stds_course_id = [std.course_id for std in stud_course.query.filter_by(
-                                    student_id=request.form.get('students'))]
+                    student_id=request.form.get('students'))]
                 if int(course) not in stds_course_id:
                     c = stud_course(student_id=request.form.get('students'), course_id=course)
                     db.session.add(c)
@@ -86,10 +99,13 @@ def Courses():
     return render_template('courses.html', crss=crs_info)
 
 
-@app.route('/add_stud', methods=('POST', 'GET'))
+@app.route('/add_student', methods=('POST', 'GET'))
 def registration():
+    """
+    Registration for students
+    :return: text/html
+    """
     if request.method == 'POST':
-
         try:
             s = Student(first_name=request.form['first name'],
                         last_name=request.form['last name'],
@@ -100,7 +116,6 @@ def registration():
             c = stud_course(student_id=s.id, course_id=request.form['course'])
             db.session.add(c)
             db.session.commit()
-
         except:
             db.session.rellback()
             print('Registration error')
