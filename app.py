@@ -1,6 +1,6 @@
 from flask import render_template, request
-from models import Group, Student, Course, StudCourse as stud_course, db, app
-from api import api
+from api import api, app, Group, Student, Course, StudCourse, db
+
 
 
 @app.route('/groups/', methods=['GET'])
@@ -29,7 +29,7 @@ def Groups():
     return render_template('groups.html', grps=grp_info, numbr_stds_in_grp=numbr_stds_in_grp)
 
 
-@app.route('/students/', methods=('POST', 'GET'))
+@app.route('/students/', methods=('POST', 'GET', 'PUT', 'DELETE'))
 def Students():
     """
     Students/Student info
@@ -39,7 +39,7 @@ def Students():
     if request.args.get('student_id'):
         grp_info = Group.query.all()
         crs_info = Course.query.all()
-        tbl = stud_course.query.all()
+        tbl = StudCourse.query.all()
         student = request.args.get('student_id')
         if request.form.get('rem_std'):
             '''Remove student'''
@@ -55,7 +55,7 @@ def Students():
         elif request.form.get('rem_crs'):
             '''Remove student from course'''
             try:
-                c = stud_course.query.filter_by(student_id=int(student),
+                c = StudCourse.query.filter_by(student_id=int(student),
                                                 course_id=request.form.get('courses')).first()
                 db.session.delete(c)
                 db.session.commit()
@@ -69,7 +69,7 @@ def Students():
     return render_template('students.html', info=std_info)
 
 
-@app.route('/courses/', methods=['POST', 'GET', 'PUT'])
+@app.route('/courses/', methods=['POST', 'GET', 'PUT', 'DELETE'])
 def Courses():
     """
     Courses/Course info
@@ -77,17 +77,17 @@ def Courses():
     """
     crs_info = Course.query.all()
     if request.args.get('course_id'):
-        tbl = stud_course.query.all()
+        tbl = StudCourse.query.all()
         std_info = Student.query.all()
         grp_info = Group.query.all()
         course = request.args.get('course_id')
         if request.form.get('add_std'):
             """ Add student on course from list"""
             try:
-                stds_course_id = [std.course_id for std in stud_course.query.filter_by(
+                stds_course_id = [std.course_id for std in StudCourse.query.filter_by(
                     student_id=request.form.get('students'))]
                 if int(course) not in stds_course_id:
-                    c = stud_course(student_id=request.form.get('students'), course_id=course)
+                    c = StudCourse(student_id=request.form.get('students'), course_id=course)
                     db.session.add(c)
                     db.session.commit()
             except:
@@ -113,7 +113,7 @@ def registration():
             db.session.add(s)
             db.session.flush()
 
-            c = stud_course(student_id=s.id, course_id=request.form['course'])
+            c = StudCourse(student_id=s.id, course_id=request.form['course'])
             db.session.add(c)
             db.session.commit()
         except:
@@ -124,4 +124,5 @@ def registration():
 
 
 if __name__ == '__main__':
+    from api import api
     app.run()

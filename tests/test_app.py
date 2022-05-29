@@ -1,6 +1,5 @@
 import unittest
-from flask import Flask
-from models import db
+from api import db
 from app import app
 import flask
 
@@ -14,7 +13,7 @@ class BaseTestCase(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
-        self.app = Flask(__name__)
+        self.app = app
         db.init_app(self.app)
         with self.app.app_context():
             db.create_all()
@@ -53,7 +52,7 @@ class BaseTestCase(unittest.TestCase):
         """
         Ensures that the database is emptied for next unit test
         """
-        self.app = Flask(__name__)
+        self.app = app
         db.init_app(self.app)
         with self.app.app_context():
             db.drop_all()

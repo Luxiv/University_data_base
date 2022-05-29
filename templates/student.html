@@ -26,7 +26,7 @@ Student
                 {% for grp in grps %}
                     {% if grp.id == std.group_id %}
                         <div class="container row row-cols-1 row-cols-md-5 gx-1">
-                            <div class="col themed-grid-col" ><code>Group: </code><a href='/groups/?group={{ grp.id }}' id="{{ grp.id }}"> {{ grp.name }} </a></div>
+                            <div class="col themed-grid-col" ><code>Group: </code><a href='/groups/?group_id={{ grp.id }}' id="{{ grp.id }}"> {{ grp.name }} </a></div>
                         </div>
                     {% endif %}
                 {% endfor %}
