@@ -1,64 +1,12 @@
 from flask_restx import Api, Resource, fields
-from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request
+
 
 app = Flask(__name__)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost/students'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
-
-# Associatin Table:
-class StudCourse(db.Model):
-    __tablename__ = 'stud_course'
-    id = db.Column(db.Integer(), primary_key=True)
-    student_id = db.Column(db.Integer(), db.ForeignKey('student.id',
-                                                       ondelete='CASCADE'))
-    course_id = db.Column(db.Integer(), db.ForeignKey('course.id',
-                                                      ondelete='CASCADE'))
-
-
-class Group(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True)
-    students_in_group = db.relationship('Student', backref='group', lazy='dynamic')
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return f'ID: {self.id} Group {self.name}'
-
-
-class Student(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
-    courses = db.relationship("Course", secondary='stud_course',
-                              backref=db.backref('student', lazy='dynamic'))
-
-    def __init__(self, first_name, last_name, group_id):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.group_id = group_id
-
-    def __repr__(self):
-        return f'ID: {self.id} Student {self.first_name} {self.last_name} '
-
-
-class Course(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True)
-    description = db.Column(db.String(150), unique=True)
-
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-
-    def __repr__(self):
-        return f'ID: {self.id} Course {self.name}'
 
 
 VERSION = '1.0'
@@ -97,6 +45,7 @@ class Groups(Resource):
                     Info about groups
         To get students in group, pleas pass group id
         """
+        from models import Group, Student
         group_ids_list = [std.group_id for std in Student.query.all()]
         group_info = {f'ID: {grp.id}': [f'Name: {grp.name}', f'Students in group: {group_ids_list.count(grp.id)}']
                       for grp in Group.query.all()}
@@ -118,6 +67,7 @@ class Courses(Resource):
         To get students on course, pleas pass course id
 
         """
+        from models import Student, Course, StudCourse
         courses_info = {crs.id: crs.name for crs in Course.query.all()}
         args = course_parser.parse_args()
 
@@ -133,6 +83,7 @@ class Courses(Resource):
         To assign student to the course
             pleas pass student id
         """
+        from models import StudCourse
         args = course_parser.parse_args()
         if args.course_id:
             sc = StudCourse(course_id=int(args.course_id), student_id=request.json['student_id'])
@@ -149,6 +100,7 @@ class Students(Resource):
                  Get info about students
          To get info about student pleas pass student id
         """
+        from models import Student, StudCourse
         args = student_parser.parse_args()
         students_info = {std.id: [std.first_name, std.last_name, f'group id: {std.group_id}',
                          f'courses id: {[crs.course_id for crs in StudCourse.query.filter_by(student_id=std.id)]}']
@@ -165,6 +117,7 @@ class Students(Resource):
         """
         Remove student from course
         """
+        from models import StudCourse
         args = student_parser.parse_args()
 
         association_id = [row.id for row in
@@ -182,6 +135,7 @@ class Students(Resource):
             Delete student
         pleas pass student id
         """
+        from models import Student
         args = student_parser.parse_args()
         s = Student.query.get(int(args.student_id))
         db.session.delete(s)
@@ -197,6 +151,7 @@ class AddStudent(Resource):
          Student Registration
         Pleas pass the fields
         """
+        from models import Student, StudCourse
         s = Student(first_name=request.json['First name'],
                     last_name=request.json['Last name'],
                     group_id=request.json['Group id'])
@@ -207,7 +162,3 @@ class AddStudent(Resource):
         db.session.add(c)
         db.session.commit()
         return {'message': 'data updated'}
-
-
-if __name__ == '__main__':
-    app.run()

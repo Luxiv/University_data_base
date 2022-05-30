@@ -1,15 +1,7 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost/students'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
+from api import db
 
 
-# Associatin Table:
+# Association Table:
 class StudCourse(db.Model):
     __tablename__ = 'stud_course'
     id = db.Column(db.Integer(), primary_key=True)

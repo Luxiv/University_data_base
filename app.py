@@ -1,14 +1,14 @@
 from flask import render_template, request
-from api import api, app, Group, Student, Course, StudCourse, db
-
+from api import app
 
 
 @app.route('/groups/', methods=['GET'])
-def Groups():
+def groups():
     """
     Groups/Group info
     :return: text/html
     """
+    from models import Group, Student
     grp_info = Group.query.all()
     group_ids_list = [std.group_id for std in Student.query.all()]
     numbr_stds_in_grp = {grp.id: group_ids_list.count(grp.id) for grp in Group.query.all()}
@@ -30,11 +30,12 @@ def Groups():
 
 
 @app.route('/students/', methods=('POST', 'GET', 'PUT', 'DELETE'))
-def Students():
+def students():
     """
     Students/Student info
     :return: text/html
     """
+    from models import Group, Student, Course, StudCourse, db
     std_info = Student.query.all()
     if request.args.get('student_id'):
         grp_info = Group.query.all()
@@ -48,21 +49,21 @@ def Students():
                 db.session.delete(s)
                 db.session.commit()
                 return render_template('student_removed.html', title='Student')
-            except:
+            except Exception:
                 db.session.rollback()
-                print('Removing error')
+                raise Exception('Removing error')
 
         elif request.form.get('rem_crs'):
             '''Remove student from course'''
             try:
                 c = StudCourse.query.filter_by(student_id=int(student),
-                                                course_id=request.form.get('courses')).first()
+                                               course_id=request.form.get('courses')).first()
                 db.session.delete(c)
                 db.session.commit()
                 return render_template('student_removed.html', title='Course')
-            except:
+            except Exception:
                 db.session.rollback()
-                print('Removing error')
+                raise Exception('Removing error')
 
         return render_template('student.html', info=std_info, grps=grp_info,
                                crss=crs_info, id=int(student), tbl=tbl)
@@ -70,11 +71,12 @@ def Students():
 
 
 @app.route('/courses/', methods=['POST', 'GET', 'PUT', 'DELETE'])
-def Courses():
+def courses():
     """
     Courses/Course info
     :return: text/html
     """
+    from models import Group, Student, Course, StudCourse, db
     crs_info = Course.query.all()
     if request.args.get('course_id'):
         tbl = StudCourse.query.all()
@@ -90,9 +92,9 @@ def Courses():
                     c = StudCourse(student_id=request.form.get('students'), course_id=course)
                     db.session.add(c)
                     db.session.commit()
-            except:
+            except Exception:
                 db.session.rollback()
-                print('Assign  error')
+                raise Exception('Assign  error')
 
         return render_template('course.html', stds=std_info, grps=grp_info,
                                crss=crs_info, id=int(course), tbls=tbl)
@@ -105,6 +107,7 @@ def registration():
     Registration for students
     :return: text/html
     """
+    from models import Student, StudCourse, db
     if request.method == 'POST':
         try:
             s = Student(first_name=request.form['first name'],
@@ -116,13 +119,12 @@ def registration():
             c = StudCourse(student_id=s.id, course_id=request.form['course'])
             db.session.add(c)
             db.session.commit()
-        except:
+        except Exception:
             db.session.rellback()
-            print('Registration error')
+            raise Exception('Registration error')
 
     return render_template('student_reg.html', title='Registration')
 
 
 if __name__ == '__main__':
-    from api import api
     app.run()

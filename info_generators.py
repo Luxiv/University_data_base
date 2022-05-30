@@ -8,18 +8,17 @@ def handle_type_error(funktion):
     :param funktion:
     :return: funktion/ValueError
     """
-
     def wrapper(self, *arg):
         try:
             res = funktion(self, *arg)
         except TypeError:
-            raise ValueError('Value must be Integer! Please input correct data!')
+            raise ValueError('Value must be type Integer! Please input correct data!')
         return res
 
     return wrapper
 
 
-class Group_Gen:
+class GroupGen:
     @handle_type_error
     def group_gene8or(self, number_of_groups: int):
         """
@@ -36,7 +35,7 @@ class Group_Gen:
         return list_of_groups
 
 
-class Student_Gen:
+class StudentGen:
     @handle_type_error
     def student_gene8or(self, number_of_students: int):
         """
@@ -56,8 +55,7 @@ class Student_Gen:
         return list_of_names
 
 
-class Course_Gen:
-
+class CourseGen:
     def courses_list(self):
         """
         Lst of courses

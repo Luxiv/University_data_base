@@ -52,8 +52,6 @@ class BaseTestCase(unittest.TestCase):
         """
         Ensures that the database is emptied for next unit test
         """
-        self.app = app
-        db.init_app(self.app)
         with self.app.app_context():
             db.drop_all()
 

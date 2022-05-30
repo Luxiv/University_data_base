@@ -1,37 +1,37 @@
-from models import db, Student, Course, Group
-from models import StudCourse as stud_course
-from info_generators import Student_Gen, Course_Gen, Group_Gen
+from models import db, Student, Course, Group, StudCourse
+from info_generators import StudentGen, CourseGen, GroupGen
+from loguru import logger
 import random
+
 
 def groups_upload(group_number):
     """
-    Group uploader gets info at Group_Gen().group_gene8or()
+    Group uploader gets info at GroupGen().group_gene8or()
     and uploads it to database
     :param group_number:
     :return: text
     """
     try:
-        for group_name in Group_Gen().group_gene8or(group_number):
+        for group_name in GroupGen().group_gene8or(group_number):
             g = Group(name=group_name)
             db.session.add(g)
-            print(f'Group {group_name}')
+            logger.info(f'Group {group_name}')
         db.session.commit()
-        print(f'{group_number} groups are uploaded to db')
-    except:
+        logger.info(f'{group_number} groups are uploaded to db')
+    except Exception:
         db.session.rollback()
-        print('Db group adding error')
-
+        raise Exception('Db group adding error')
 
 
 def group_id_gen(used_id, id_list):
-    '''
+    """
     Its function helper for func stud_upload() that randomly assign students to groups.
     Each group could contain from 10 to 30 students.
     It is possible that some students will be without groups
     :param used_id:
     :param id_list:
     :return: group_id
-    '''
+    """
     for group_id in id_list:
         used_id.append(group_id)
         if used_id.count(group_id) <= random.choice(range(10, 31)):
@@ -40,40 +40,39 @@ def group_id_gen(used_id, id_list):
 
 def stud_upload(stud_number):
     """
-    Student uploader gets info at Student_Gen().student_gene8or()
+    Student uploader gets info at StudentGen().student_gene8or()
     and uploads it to database
     :return: text
     """
     try:
         used_id = []
         group_ids_list = [i.id for i in Group.query.all()]
-        for ful_name in Student_Gen().student_gene8or(stud_number):
+        for ful_name in StudentGen().student_gene8or(stud_number):
             fn = ful_name.split()
             s = Student(first_name=fn[0], last_name=fn[1], group_id=group_id_gen(used_id, group_ids_list))
             db.session.add(s)
         db.session.commit()
-        print(f'{stud_number} students are uploaded to db')
-    except:
+        logger.info(f'{stud_number} students are uploaded to db')
+    except Exception:
         db.session.rollback()
-        print('Db student adding error')
-
+        raise Exception('Db student adding error')
 
 
 def course_upload():
     """
-    Course uploader gets info at Course_Gen().courses_list()
+    Course uploader gets info at CourseGen().courses_list()
     and uploads it to database
     :return: text
     """
     try:
-        for course in Course_Gen().courses_list():
+        for course in CourseGen().courses_list():
             c = Course(name=course, description=f'On this course you going to study {course}!')
             db.session.add(c)
         db.session.commit()
-        print('All courses are uploaded to db')
-    except:
+        logger.info('All courses are uploaded to db')
+    except Exception:
         db.session.rollback()
-        print('Db courses adding error')
+        raise Exception('Db courses adding error')
 
 
 def students_courses_assignation():
@@ -89,16 +88,15 @@ def students_courses_assignation():
             for j in range(1, number_courses_for_one_student + 1):
                 course = random.choice(Course.query.all())
                 if course not in used_courses_list:
-                    statement = stud_course(student_id=std.id, course_id=course.id)
+                    statement = StudCourse(student_id=std.id, course_id=course.id)
                     db.session.add(statement)
 
-                    print(f'Student: {std.id} course: {course.name}')
+                    logger.info(f'Student: {std.id} course: {course.name}')
                 used_courses_list.append(course)
-            print('______________________________')
         db.session.commit()
-    except:
+    except Exception:
         db.session.rollback()
-        print('Db assignation error')
+        raise Exception('Db assignation error')
 
 
 groups_upload(10)
