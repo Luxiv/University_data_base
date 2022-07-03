@@ -1,9 +1,10 @@
 import unittest
 from api import db
-from app import app
+from app_config import app
 import flask
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:1@localhost/students'
+# SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:1@localhost/students'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///students.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 TESTING = True
 

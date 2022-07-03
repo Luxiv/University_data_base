@@ -1,20 +1,13 @@
 from flask_restx import Api, Resource, fields
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request
-
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1@localhost/students'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
+from flask import request
+from models import Group, Student, Course, StudCourse, db
+from app_config import app
 
 VERSION = '1.0'
-
 api = Api(app, doc='/apidocs/', version=VERSION, title='FoxmindEd university API',
-          description='API helps you to get all information of university', )
-name_spase = api.namespace(f'api/{VERSION}', description='API INFO')
-ns = name_spase
+          description='API helps you to get all information of university')
+ns = api.namespace(f'api/{VERSION}', description='API INFO')
+
 
 group_parser = ns.parser()
 group_parser.add_argument('group_id', location='args')
@@ -45,7 +38,6 @@ class Groups(Resource):
                     Info about groups
         To get students in group, pleas pass group id
         """
-        from models import Group, Student
         group_ids_list = [std.group_id for std in Student.query.all()]
         group_info = {f'ID: {grp.id}': [f'Name: {grp.name}', f'Students in group: {group_ids_list.count(grp.id)}']
                       for grp in Group.query.all()}
@@ -67,7 +59,6 @@ class Courses(Resource):
         To get students on course, pleas pass course id
 
         """
-        from models import Student, Course, StudCourse
         courses_info = {crs.id: crs.name for crs in Course.query.all()}
         args = course_parser.parse_args()
 
@@ -83,7 +74,6 @@ class Courses(Resource):
         To assign student to the course
             pleas pass student id
         """
-        from models import StudCourse
         args = course_parser.parse_args()
         if args.course_id:
             sc = StudCourse(course_id=int(args.course_id), student_id=request.json['student_id'])
@@ -100,7 +90,6 @@ class Students(Resource):
                  Get info about students
          To get info about student pleas pass student id
         """
-        from models import Student, StudCourse
         args = student_parser.parse_args()
         students_info = {std.id: [std.first_name, std.last_name, f'group id: {std.group_id}',
                          f'courses id: {[crs.course_id for crs in StudCourse.query.filter_by(student_id=std.id)]}']
@@ -117,7 +106,6 @@ class Students(Resource):
         """
         Remove student from course
         """
-        from models import StudCourse
         args = student_parser.parse_args()
 
         association_id = [row.id for row in
@@ -135,7 +123,6 @@ class Students(Resource):
             Delete student
         pleas pass student id
         """
-        from models import Student
         args = student_parser.parse_args()
         s = Student.query.get(int(args.student_id))
         db.session.delete(s)
@@ -151,7 +138,6 @@ class AddStudent(Resource):
          Student Registration
         Pleas pass the fields
         """
-        from models import Student, StudCourse
         s = Student(first_name=request.json['First name'],
                     last_name=request.json['Last name'],
                     group_id=request.json['Group id'])

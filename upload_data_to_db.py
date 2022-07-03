@@ -1,5 +1,6 @@
 from models import db, Student, Course, Group, StudCourse
 from info_generators import StudentGen, CourseGen, GroupGen
+from app_config import app
 from loguru import logger
 import random
 
@@ -99,7 +100,8 @@ def students_courses_assignation():
         raise Exception('Db assignation error')
 
 
-groups_upload(10)
-stud_upload(200)
-course_upload()
-students_courses_assignation()
+with app.app_context():
+    groups_upload(10)
+    stud_upload(200)
+    course_upload()
+    students_courses_assignation()

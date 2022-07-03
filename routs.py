@@ -1,5 +1,7 @@
+from models import Group, Student, Course, StudCourse, db
 from flask import render_template, request
-from api import app
+from app_config import app
+from api import api
 
 
 @app.route('/groups/', methods=['GET'])
@@ -8,7 +10,6 @@ def groups():
     Groups/Group info
     :return: text/html
     """
-    from models import Group, Student
     grp_info = Group.query.all()
     group_ids_list = [std.group_id for std in Student.query.all()]
     numbr_stds_in_grp = {grp.id: group_ids_list.count(grp.id) for grp in Group.query.all()}
@@ -35,7 +36,6 @@ def students():
     Students/Student info
     :return: text/html
     """
-    from models import Group, Student, Course, StudCourse, db
     std_info = Student.query.all()
     if request.args.get('student_id'):
         grp_info = Group.query.all()
@@ -76,7 +76,6 @@ def courses():
     Courses/Course info
     :return: text/html
     """
-    from models import Group, Student, Course, StudCourse, db
     crs_info = Course.query.all()
     if request.args.get('course_id'):
         tbl = StudCourse.query.all()
@@ -107,7 +106,6 @@ def registration():
     Registration for students
     :return: text/html
     """
-    from models import Student, StudCourse, db
     if request.method == 'POST':
         try:
             s = Student(first_name=request.form['first name'],
