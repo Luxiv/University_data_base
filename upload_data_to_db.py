@@ -4,6 +4,9 @@ from app_config import app
 from loguru import logger
 import random
 
+with app.app_context():
+    db.create_all()
+
 
 def groups_upload(group_number):
     """
