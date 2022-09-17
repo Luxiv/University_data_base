@@ -7,7 +7,7 @@ ___
 :white_check_mark: API for application
 ![Presentation API](static/API.png)
 :white_check_mark: Minimalistic front-end design
-![Presentation std_info](static/std.png)
+![Presentation std_info](static/std.PNG)
 
 ___
 
